@@ -1,10 +1,6 @@
 <?php
 // Koneksi dan ambil semua data hakim untuk dropdown
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "sertifikasi_hakim";
-$conn = new mysqli($servername, $username, $password, $dbname);
+require_once 'koneksi.php';
 
 $hakim_list = [];
 $sql_list = "SELECT id, nama FROM drp_hakim_perikanan ORDER BY nama ASC";

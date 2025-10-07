@@ -237,6 +237,9 @@ $conn->close();
                  <a href="daftar_usulan.php" class="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition text-center">
                      Lihat Daftar Usulan
                  </a>
+                 <a href="drp_perikanan.ph.p" class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition text-center">
+    Lihat DRP Hakim Ad Hoc Perikanan
+</a>
                  <a href="index.php" class="bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition text-center">
                      Kembali ke Dashboard
                  </a>

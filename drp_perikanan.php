@@ -23,6 +23,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
+         <li class="nav-item">
+          <a class="nav-link" href="index.php">Dashboard</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="drp_perikanan.php">Daftar Hakim</a>
         </li>
@@ -58,12 +61,8 @@
     </div>
 
     <?php
-    // --- PHP SCRIPT ---
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "sertifikasi_hakim";
-    $conn = new mysqli($servername, $username, $password, $dbname);
+  
+    require_once 'koneksi.php';
 
     if ($conn->connect_error) {
         die('<div class="alert alert-danger">Koneksi Gagal: ' . htmlspecialchars($conn->connect_error) . '</div>');

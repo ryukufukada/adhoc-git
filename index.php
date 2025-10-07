@@ -58,7 +58,7 @@ $daftar_sertifikasi = [
                     <a href="detail.php" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition text-center">
                         Cek Sertifikat
                     </a>
-                    <a href="drp_perikanan.php" class="btn btn-primary btn-lg">
+                    <a href="drp_perikanan.ph.p" class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition text-center">
     Lihat DRP Hakim Ad Hoc Perikanan
 </a>
                     <!-- Tombol logout akan mengarahkan kembali ke halaman login -->

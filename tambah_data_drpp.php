@@ -42,9 +42,7 @@
                         // (PHP processing script from previous answer goes here, unchanged)
                         $pesan = '';
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                            $servername = "localhost"; $username = "root"; $password = ""; $dbname = "sertifikasi_hakim";
-                            $conn = new mysqli($servername, $username, $password, $dbname);
-                            if ($conn->connect_error) { die("Koneksi Gagal: " . $conn->connect_error); }
+                            require_once 'koneksi.php';
                             
                             $nama = $_POST['nama']; $nip_nrp = $_POST['nip_nrp']; $gol_rg = $_POST['gol_rg']; $tempat_lahir = $_POST['tempat_lahir'];
                             $tanggal_lahir = $_POST['tanggal_lahir']; $jenis_kelamin = $_POST['jenis_kelamin']; $agama = $_POST['agama'];

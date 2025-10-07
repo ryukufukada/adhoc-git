@@ -1,11 +1,6 @@
 <?php
 // --- SCRIPT IMPOR ---
-$db_host = 'localhost';
-$db_user = 'root';
-$db_pass = '';
-$db_name = 'sertifikasi_hakim_perikanan';
-
-$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+require_once 'koneksi.php';
 if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
 
 // Data CSV Baru Anda
