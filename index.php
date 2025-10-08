@@ -1,15 +1,14 @@
 <?php
-// Data dummy untuk hakim. Di aplikasi nyata, data ini akan diambil dari database.
+// --- Data dummy untuk hakim (di aplikasi nyata diambil dari database) ---
 $data_hakim = [
     [
-        "nama" => "Fulan FUlan, S.H., M.H.",
+        "nama" => "Fulan Fulan, S.H., M.H.",
         "nip" => "197508172000031002",
-        "sertifikat" => "Hakim Tipikor"
+        "sertifikat" => "Hakim Anak"
     ],
-    
 ];
 
-// Data dummy untuk daftar sertifikasi
+// --- Data dummy untuk daftar sertifikasi ---
 $daftar_sertifikasi = [
     "Sertifikasi Hakim Tindak Pidana Korupsi (Tipikor)",
     "Sertifikasi Hakim Hubungan Industrial",
@@ -21,7 +20,6 @@ $daftar_sertifikasi = [
     "Sertifikasi Ekonomi Syariah",
     "Sertifikasi Lingkungan Hidup"
 ];
-
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -29,142 +27,82 @@ $daftar_sertifikasi = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Pengecekan Sertifikasi</title>
-    <!-- Memuat Tailwind CSS untuk styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Memuat Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        /* Menggunakan font Inter sebagai default */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
+        body {  
+            font-family: "Karla", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal; }
+        .sidebar-list { max-height: 400px; overflow-y: auto; }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-light">
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div class="bg-white p-8 md:p-12 rounded-xl shadow-lg">
-            
+<div class="container py-4">
+    <div class="card shadow mb-4">
+        <div class="card-body">
             <!-- Header Dashboard -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 border-b pb-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center border-bottom pb-3 mb-4">
                 <div>
-                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Dashboard Admin</h1>
-                    <p class="text-gray-500 mt-1">Manajemen Sertifikasi Hakim Karir</p>
+                    <h1 class="h3 fw-bold text-dark mb-0">Dashboard Admin</h1>
+                    <small class="text-muted">Manajemen Mutasi Hakim Karir</small>
                 </div>
-                <div class="flex items-center space-x-4 mt-4 sm:mt-0">
-                    <!-- Tombol Cek Sertifikat -->
-                    <a href="detail.php" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition text-center">
-                        Cek Sertifikat
+                <div class="mt-3 mt-md-0 d-flex gap-2">
+                    <!-- Tombol navigasi dengan ikon Font Awesome -->
+                    <a href="drp_perikanan.php" class="btn btn-success">
+                        <i class="fa-solid fa-eye me-1"></i> Lihat DRP Hakim Ad Hoc Perikanan
                     </a>
-                    <a href="drp_perikanan.ph.p" class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition text-center">
-    Lihat DRP Hakim Ad Hoc Perikanan
-</a>
-                    <!-- Tombol logout akan mengarahkan kembali ke halaman login -->
-                    <a href="index.html" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition text-center">
-                        Logout
+                    <a href="index.html" class="btn btn-danger">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
                     </a>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
+            <div class="row g-4">
                 <!-- Kolom Utama: Tabel Hakim -->
-                <div class="lg:col-span-2">
-                    
+                <div class="col-lg-12">
                     <!-- Navigasi Tab -->
-                    <div class="mb-6">
-                        <div class="border-b border-gray-200">
-                            <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                                <a href="#" class="whitespace-nowrap py-3 px-1 border-b-2 border-blue-500 font-semibold text-sm text-blue-600" aria-current="page">
-                                    Semua Hakim
-                                </a>
-                                <a href="perikanan_db.php" class="whitespace-nowrap py-3 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                    Hakim Perikanan 2025
-                                </a>
-                                <a href="perikanan_upload.php" class="whitespace-nowrap py-3 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                    Perikanan Upload
-                                </a>
-                                <a href="#" class="whitespace-nowrap py-3 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                    Hakim Korupsi 2025
-                                </a>
-                                <a href="tipikor_upload.php" class="whitespace-nowrap py-3 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                    Tipikor Upload
-                                </a>
-                            </nav>
-                        </div>
-                    </div>
+                    <ul class="nav nav-tabs mb-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Semua Hakim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?php echo dirname($_SERVER['PHP_SELF']); ?>/pages/hakim_perikanan.php">Hakim Perikanan 2025</a>
+                        </li>
+                    </ul>
 
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Daftar Hakim Bersertifikasi</h2>
-                    <div class="overflow-x-auto rounded-lg border border-gray-200">
-                        <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                            <thead class="bg-gray-50">
+                    <!-- Tabel Hakim Bersertifikasi -->
+                    <h2 class="h5 fw-semibold mb-3">Daftar Hakim Bersertifikasi</h2>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
                                 <tr>
-                                    <th class="whitespace-nowrap px-4 py-3 text-left font-medium text-gray-900">Nama Hakim</th>
-                                    <th class="whitespace-nowrap px-4 py-3 text-left font-medium text-gray-900">NIP</th>
-                                    <th class="whitespace-nowrap px-4 py-3 text-left font-medium text-gray-900">Sertifikat</th>
+                                    <th>Nama Hakim</th>
+                                    <th>NIP</th>
+                                    <th>Sertifikat</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200">
+                            <tbody>
                                 <?php foreach ($data_hakim as $hakim): ?>
                                     <tr>
-                                        <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900"><?php echo htmlspecialchars($hakim['nama']); ?></td>
-                                        <td class="whitespace-nowrap px-4 py-3 text-gray-700"><?php echo htmlspecialchars($hakim['nip']); ?></td>
-                                        <td class="whitespace-nowrap px-4 py-3 text-gray-700"><?php echo htmlspecialchars($hakim['sertifikat']); ?></td>
+                                        <td><?= htmlspecialchars($hakim['nama']) ?></td>
+                                        <td><?= htmlspecialchars($hakim['nip']) ?></td>
+                                        <td><?= htmlspecialchars($hakim['sertifikat']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-                <!-- Kolom Samping: Pencarian dan List Sertifikasi -->
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Master Sertifikasi</h2>
-                    
-                    <!-- Kolom Pencarian -->
-                    <div class="mb-6">
-                        <label for="searchSertifikat" class="block text-sm font-medium text-gray-700 mb-2">Cari Sertifikasi</label>
-                        <input type="text" id="searchSertifikat" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Ketik untuk mencari...">
-                    </div>
-
-                    <!-- Daftar Sertifikasi -->
-                    <div class="h-96 overflow-y-auto pr-2 border rounded-lg p-4 bg-gray-50">
-                        <ul id="sertifikatList" class="space-y-3">
-                            <?php foreach ($daftar_sertifikasi as $sertifikat): ?>
-                                <li class="p-3 bg-white rounded-md flex items-center shadow-sm">
-                                    <span class="font-medium text-gray-800 text-sm"><?php echo htmlspecialchars($sertifikat); ?></span>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
-
-    <script>
-        // --- Event Listener untuk Pencarian Sertifikat ---
-        const searchInput = document.getElementById('searchSertifikat');
-        const sertifikatList = document.getElementById('sertifikatList').getElementsByTagName('li');
-
-        searchInput.addEventListener('keyup', function() {
-            const filter = searchInput.value.toLowerCase();
-            
-            for (let i = 0; i < sertifikatList.length; i++) {
-                const item = sertifikatList[i];
-                const text = item.textContent || item.innerText;
-                if (text.toLowerCase().indexOf(filter) > -1) {
-                    item.style.display = "";
-                } else {
-                    item.style.display = "none";
-                }
-            }
-        });
-    </script>
-
+</div>
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

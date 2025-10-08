@@ -25,7 +25,7 @@ if (isset($_GET['status']) && $_GET['status'] == 'mutasi_sukses') {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] == 'add_hakim') {
-        // --- MODIFIKASI: LOGIKA UPLOAD FOTO ---
+        // --- LOGIKA UPLOAD FOTO ---
         $foto_filename = null;
         if (isset($_FILES['foto_hakim']) && $_FILES['foto_hakim']['error'] == UPLOAD_ERR_OK) {
             $upload_dir = 'uploads/';
@@ -221,211 +221,318 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Hakim Perikanan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
+        body {  
+            font-family: "Karla", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal; }
+        .hakim-photo { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 2px solid #dee2e6; }
+        .hakim-card { background: #f8f9fa; border-left: 4px solid #0d6efd; border-radius: 0.5rem; margin-bottom: 1rem; padding: 1rem; }
+        .table-responsive { margin-top: 2rem; }
+    </style>
 </head>
-<body class="bg-gray-100">
-<div class="container mx-auto p-4 sm:p-6 lg:p-8">
-    <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-            <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Data Hakim Ad Hoc Perikanan</h1>
-                <p class="text-gray-500 mt-1">Database: <?php echo htmlspecialchars($db_name); ?></p>
-            </div>
-            <div class="flex items-center space-x-2 mt-4 sm:mt-0">
-                 <a href="daftar_usulan.php" class="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition text-center">
-                     Lihat Daftar Usulan
-                 </a>
-                 <a href="drp_perikanan.ph.p" class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition text-center">
-    Lihat DRP Hakim Ad Hoc Perikanan
-</a>
-                 <a href="index.php" class="bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition text-center">
-                     Kembali ke Dashboard
-                 </a>
-            </div>
-        </div>
-        <?php if (!empty($action_message)): ?>
-            <div class="mb-6 p-4 rounded-md text-sm <?php echo $action_status == 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
-                <?php echo htmlspecialchars($action_message); ?>
-            </div>
-        <?php endif; ?>
-        <details class="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 transition">
-            <summary class="text-xl font-bold text-gray-800 cursor-pointer hover:text-blue-600">Manajemen Data</summary>
-            <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
-                <div class="space-y-4">
-                    <h3 class="font-semibold text-lg text-gray-700 border-b pb-2">Tambah Pengadilan Baru</h3>
-                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="space-y-4">
-                        <input type="hidden" name="action" value="add_pengadilan">
-                        <div><label class="block text-sm font-medium">Nama Pengadilan</label><input type="text" name="nama_pengadilan" required class="mt-1 block w-full px-3 py-2 border rounded-md"></div>
-                        <div><label class="block text-sm font-medium">HK Ad Hoc</label><input type="number" name="hk_ad_hoc" required class="mt-1 block w-full px-3 py-2 border rounded-md" value="0"></div>
-                        <div class="grid grid-cols-3 gap-4 border p-4 rounded-md bg-white">
-                            <div><label class="block text-sm font-medium">Perkara 2022</label><input type="number" id="th_2022" name="th_2022" required class="mt-1 w-full p-2 border rounded" value="0"></div>
-                            <div><label class="block text-sm font-medium">Perkara 2023</label><input type="number" id="th_2023" name="th_2023" required class="mt-1 w-full p-2 border rounded" value="0"></div>
-                            <div><label class="block text-sm font-medium">Perkara 2024</label><input type="number" id="th_2024" name="th_2024" required class="mt-1 w-full p-2 border rounded" value="0"></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-sm font-medium">Rata-rata</label><input type="number" id="rata_rata" name="rata_rata" readonly class="mt-1 w-full p-2 border rounded bg-gray-200"></div>
-                            <div><label class="block text-sm font-medium">Ideal</label><input type="number" id="ideal" name="ideal" readonly class="mt-1 w-full p-2 border rounded bg-gray-200"></div>
-                        </div>
-                        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold">Simpan Pengadilan</button>
-                    </form>
+<body class="bg-light">
+<div class="container py-4">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <!-- Header -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 border-bottom pb-3">
+                <div>
+                    <h1 class="h3 fw-bold text-dark mb-0">Data Hakim Ad Hoc Perikanan</h1>
+                    <small class="text-muted">Database: <?php echo htmlspecialchars($db_name ?? ''); ?></small>
                 </div>
-                <div class="space-y-4">
-                     <h3 class="font-semibold text-lg text-gray-700 border-b pb-2">Tambah Hakim Baru</h3>
-                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        <input type="hidden" name="action" value="add_hakim">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-sm font-medium">Nama Hakim</label><input type="text" name="nama_hakim" required class="mt-1 w-full p-2 border rounded"></div>
-                            <div><label class="block text-sm font-medium">NIK</label><input type="text" name="nik" class="mt-1 w-full p-2 border rounded"></div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium">Upload Foto</label>
-                            <input type="file" name="foto_hakim" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                        </div>
+                <div class="mt-3 mt-md-0 d-flex gap-2">
+                    <a href="daftar_usulan.php" class="btn btn-primary">Lihat Daftar Usulan</a>
+                    <a href="drp_perikanan.php" class="btn btn-success">Lihat DRP Hakim Ad Hoc Perikanan</a>
+                    <a href="index.php" class="btn btn-secondary">Kembali ke Dashboard</a>
+                </div>
+            </div>
+            <?php if (!empty($action_message)): ?>
+                <div class="alert <?php echo $action_status == 'success' ? 'alert-success' : 'alert-danger'; ?> mb-4">
+                    <?php echo htmlspecialchars($action_message); ?>
+                </div>
+            <?php endif; ?>
 
-                        <div><label class="block text-sm font-medium">Penugasan</label><select name="id_pengadilan" required class="mt-1 w-full p-2 border bg-white rounded"><option value="">-- Pilih Pengadilan --</option><?php mysqli_data_seek($pengadilan_list, 0); while($p = $pengadilan_list->fetch_assoc()): echo "<option value='{$p['id']}'>".htmlspecialchars($p['nama_pengadilan'])."</option>"; endwhile; ?></select></div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-sm font-medium">Asal Organisasi</label><input type="text" name="asal_org" class="mt-1 w-full p-2 border rounded"></div>
-                            <div><label class="block text-sm font-medium">Jabatan</label><input type="text" name="jabatan" class="mt-1 w-full p-2 border rounded" value="AD HOC PERIKANAN"></div>
+            <!-- Manajemen Data -->
+            <div class="accordion mb-4" id="manajemenData">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingData">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseData" aria-expanded="false" aria-controls="collapseData">
+                            Manajemen Data
+                        </button>
+                    </h2>
+                    <div id="collapseData" class="accordion-collapse collapse" aria-labelledby="headingData" data-bs-parent="#manajemenData">
+                        <div class="accordion-body">
+                            <div class="row g-4">
+                                <!-- Form Pengadilan -->
+                                <div class="col-lg-6">
+                                    <h5 class="fw-semibold mb-3">Tambah Pengadilan Baru</h5>
+                                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                                        <input type="hidden" name="action" value="add_pengadilan">
+                                        <div class="mb-2">
+                                            <label class="form-label">Nama Pengadilan</label>
+                                            <input type="text" name="nama_pengadilan" required class="form-control">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label">HK Ad Hoc</label>
+                                            <input type="number" name="hk_ad_hoc" required class="form-control" value="0">
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <label class="form-label">Perkara 2022</label>
+                                                <input type="number" id="th_2022" name="th_2022" required class="form-control" value="0">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">Perkara 2023</label>
+                                                <input type="number" id="th_2023" name="th_2023" required class="form-control" value="0">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">Perkara 2024</label>
+                                                <input type="number" id="th_2024" name="th_2024" required class="form-control" value="0">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <label class="form-label">Rata-rata</label>
+                                                <input type="number" id="rata_rata" name="rata_rata" readonly class="form-control bg-light">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">Ideal</label>
+                                                <input type="number" id="ideal" name="ideal" readonly class="form-control bg-light">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100 mt-2">Simpan Pengadilan</button>
+                                    </form>
+                                </div>
+                                <!-- Form Hakim -->
+                                <div class="col-lg-6">
+                                    <h5 class="fw-semibold mb-3">Tambah Hakim Baru</h5>
+                                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="action" value="add_hakim">
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <label class="form-label">Nama Hakim</label>
+                                                <input type="text" name="nama_hakim" required class="form-control">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">NIK</label>
+                                                <input type="text" name="nik" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label">Upload Foto</label>
+                                            <input type="file" name="foto_hakim" accept="image/*" class="form-control">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label">Penugasan</label>
+                                            <select name="id_pengadilan" required class="form-select">
+                                                <option value="">-- Pilih Pengadilan --</option>
+                                                <?php mysqli_data_seek($pengadilan_list, 0); while($p = $pengadilan_list->fetch_assoc()): ?>
+                                                    <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['nama_pengadilan']) ?></option>
+                                                <?php endwhile; ?>
+                                            </select>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <label class="form-label">Asal Organisasi</label>
+                                                <input type="text" name="asal_org" class="form-control">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">Jabatan</label>
+                                                <input type="text" name="jabatan" class="form-control" value="AD HOC PERIKANAN">
+                                            </div>
+                                        </div>
+                                        <div class="mb-2 border rounded p-2 bg-white">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label class="form-label">No. Kepres</label>
+                                                    <input type="text" name="kepres" class="form-control">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">Tgl. Kepres</label>
+                                                    <input type="date" name="tgl_kepres" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label class="form-label">No. SK Dirjen</label>
+                                                    <input type="text" name="sk_dirjen" class="form-control">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">Tgl. SK Dirjen</label>
+                                                    <input type="date" name="tgl_sk_dirjen" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label class="form-label">No. SK Pengangkatan Ke-2</label>
+                                                    <input type="text" name="sk_pengangkatan_2" class="form-control">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">Tgl. SK Ke-2</label>
+                                                    <input type="date" name="tgl_sk_pengangkatan_2" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2 border rounded p-2 bg-white">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label class="form-label">Masa Jabatan</label>
+                                                    <input type="text" name="masa_jabatan" class="form-control" placeholder="Contoh: 1X">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">Tgl. Habis Jabatan</label>
+                                                    <input type="date" name="tanggal_habis" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label">Status Perpanjangan</label>
+                                                <input type="text" name="status_perpanjangan" class="form-control" placeholder="Keterangan status...">
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label class="form-label">TMT PN</label>
+                                                    <input type="date" name="tmt_pn" class="form-control">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">TMT HK</label>
+                                                    <input type="date" name="tmt_hk" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-success w-100 mt-2">Simpan Hakim</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                         <div class="border p-4 rounded-md bg-white space-y-4">
-                             <div class="grid grid-cols-2 gap-4">
-                                 <div><label class="block text-sm font-medium">No. Kepres</label><input type="text" name="kepres" class="mt-1 w-full p-2 border rounded"></div>
-                                 <div><label class="block text-sm font-medium">Tgl. Kepres</label><input type="date" name="tgl_kepres" class="mt-1 w-full p-2 border rounded"></div>
-                             </div>
-                             <div class="grid grid-cols-2 gap-4">
-                                 <div><label class="block text-sm font-medium">No. SK Dirjen</label><input type="text" name="sk_dirjen" class="mt-1 w-full p-2 border rounded"></div>
-                                 <div><label class="block text-sm font-medium">Tgl. SK Dirjen</label><input type="date" name="tgl_sk_dirjen" class="mt-1 w-full p-2 border rounded"></div>
-                             </div>
-                              <div class="grid grid-cols-2 gap-4">
-                                 <div><label class="block text-sm font-medium">No. SK Pengangkatan Ke-2</label><input type="text" name="sk_pengangkatan_2" class="mt-1 w-full p-2 border rounded"></div>
-                                 <div><label class="block text-sm font-medium">Tgl. SK Ke-2</label><input type="date" name="tgl_sk_pengangkatan_2" class="mt-1 w-full p-2 border rounded"></div>
-                             </div>
-                         </div>
-                        <div class="border p-4 rounded-md bg-white space-y-4">
-                            <div class="grid grid-cols-2 gap-4">
-                                 <div><label class="block text-sm font-medium">Masa Jabatan</label><input type="text" name="masa_jabatan" class="mt-1 w-full p-2 border rounded" placeholder="Contoh: 1X"></div>
-                                 <div><label class="block text-sm font-medium">Tgl. Habis Jabatan</label><input type="date" name="tanggal_habis" class="mt-1 w-full p-2 border rounded"></div>
-                             </div>
-                            <div><label class="block text-sm font-medium">Status Perpanjangan</label><input type="text" name="status_perpanjangan" class="mt-1 w-full p-2 border rounded" placeholder="Keterangan status..."></div>
-                             <div class="grid grid-cols-2 gap-4">
-                                 <div><label class="block text-sm font-medium">TMT PN</label><input type="date" name="tmt_pn" class="mt-1 w-full p-2 border rounded"></div>
-                                 <div><label class="block text-sm font-medium">TMT HK</label><input type="date" name="tmt_hk" class="mt-1 w-full p-2 border rounded"></div>
-                             </div>
-                         </div>
-                        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md font-semibold">Simpan Hakim</button>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </details>
-        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 my-8">
-            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                <div><label class="block text-sm font-medium">Cari Hakim / PN / NIK</label><input type="text" name="search" class="mt-1 w-full p-2 border rounded" value="<?php echo htmlspecialchars($search_term); ?>"></div>
-                <div><label class="block text-sm font-medium">Urutkan</label><select name="sort" class="mt-1 w-full p-2 border bg-white rounded"><option value="default" <?php if($sort_order == 'default') echo 'selected'; ?>>Pengadilan (A-Z)</option><option value="expiration" <?php if($sort_order == 'expiration') echo 'selected'; ?>>Masa Habis Tercepat</option></select></div>
-                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md font-semibold">Terapkan</button>
-            </form>
-        </div>
-        <div class="overflow-x-auto rounded-lg border border-gray-200">
-             <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                <thead class="bg-gray-50 text-center">
-                    <tr>
-                        <th class="px-4 py-3 font-bold">NO.</th>
-                        <th class="px-4 py-3 font-bold text-left">PENGADILAN & DETAIL HAKIM</th>
-                        <th class="px-4 py-3 font-bold">HK AD HOC</th>
-                        <th class="px-4 py-3 font-bold">PERKARA 2023</th>
-                        <th class="px-4 py-3 font-bold">PERKARA 2024</th>
-                        <th class="px-4 py-3 font-bold">RATA-RATA</th>
-                        <th class="px-4 py-3 font-bold">IDEAL</th>
-                        <th class="px-4 py-3 font-bold">AKSI PN</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                     <?php if (empty($grouped_data)): ?>
-                        <tr><td colspan="8" class="text-center py-10">Tidak ada data.</td></tr>
-                    <?php else: $i = 1; ?>
-                        <?php foreach ($grouped_data as $data): ?>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3 font-medium align-top text-center"><?php echo $i++; ?></td>
-                                <td class="px-4 py-3 text-left align-top">
-                                    <div class="font-bold text-gray-900 mb-4"><?php echo htmlspecialchars($data['keterangan']); ?></div>
-                                    <?php if (!empty($data['list_hakim'])): ?>
-                                        <div class="space-y-4">
+
+            <!-- Filter & Search -->
+            <div class="bg-light p-3 rounded mb-4 border">
+                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="GET" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">Cari Hakim / PN / NIK</label>
+                        <input type="text" name="search" class="form-control" value="<?php echo htmlspecialchars($search_term); ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Urutkan</label>
+                        <select name="sort" class="form-select">
+                            <option value="default" <?php if($sort_order == 'default') echo 'selected'; ?>>Pengadilan (A-Z)</option>
+                            <option value="expiration" <?php if($sort_order == 'expiration') echo 'selected'; ?>>Masa Habis Tercepat</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">Terapkan</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabel Data -->
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>NO.</th>
+                            <th class="text-start">PENGADILAN & DETAIL HAKIM</th>
+                            <th>HK AD HOC</th>
+                            <th>PERKARA 2023</th>
+                            <th>PERKARA 2024</th>
+                            <th>RATA-RATA</th>
+                            <th>IDEAL</th>
+                            <th>AKSI PN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($grouped_data)): ?>
+                            <tr><td colspan="8" class="text-center py-5">Tidak ada data.</td></tr>
+                        <?php else: $i = 1; ?>
+                            <?php foreach ($grouped_data as $data): ?>
+                                <tr>
+                                    <td><?= $i++; ?></td>
+                                    <td class="text-start">
+                                        <div class="fw-bold mb-2"><?= htmlspecialchars($data['keterangan']); ?></div>
+                                        <?php if (!empty($data['list_hakim'])): ?>
                                             <?php foreach ($data['list_hakim'] as $hakim): ?>
-                                                <div class="p-3 border-l-4 border-blue-300 bg-gray-50/80 rounded-r-lg">
-                                                    <div class="flex justify-between items-start">
-                                                        <div class="flex items-center space-x-4">
-                                                            <img src="<?php echo !empty($hakim['foto']) ? 'uploads/' . htmlspecialchars($hakim['foto']) : 'https://via.placeholder.com/64x64.png?text=FOTO'; ?>" 
-                                                                 alt="Foto Hakim" 
-                                                                 class="w-16 h-16 rounded-full object-cover border-2 border-gray-200 flex-shrink-0">
-                                                            <div>
-                                                                <p class="font-bold text-gray-800"><?php echo htmlspecialchars($hakim['nama_hakim']); ?></p>
-                                                                <p class="text-xs text-gray-500">NIK: <?php echo htmlspecialchars($hakim['nik']); ?></p>
-                                                            </div>
+                                                <div class="hakim-card">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <img src="<?= !empty($hakim['foto']) ? 'uploads/' . htmlspecialchars($hakim['foto']) : 'https://via.placeholder.com/64x64.png?text=FOTO'; ?>" alt="Foto Hakim" class="hakim-photo me-3">
+                                                        <div>
+                                                            <div class="fw-bold"><?= htmlspecialchars($hakim['nama_hakim']); ?></div>
+                                                            <div class="text-muted small">NIK: <?= htmlspecialchars($hakim['nik']); ?></div>
                                                         </div>
-                                                        <div class="flex items-center space-x-3 flex-shrink-0 ml-4">
-                                                            <a href="mutasi.php?id=<?php echo $hakim['id_hakim']; ?>" class="text-blue-600 text-xs font-bold hover:underline">MUTASI</a>
-                                                            <a href="usul.php?id=<?php echo $hakim['id_hakim']; ?>" class="text-green-600 text-xs font-bold hover:underline">USUL</a>
-                                                            <a href="?action=delete_hakim&id=<?php echo $hakim['id_hakim']; ?>" class="text-red-500 text-xs font-medium" onclick="return confirm('Yakin hapus hakim ini?');">HAPUS</a>
+                                                        <div class="ms-auto d-flex gap-2">
+                                                            <a href="mutasi.php?id=<?= $hakim['id_hakim']; ?>" class="btn btn-sm btn-outline-primary">Mutasi</a>
+                                                            <a href="usul.php?id=<?= $hakim['id_hakim']; ?>" class="btn btn-sm btn-outline-success">Usul</a>
+                                                            <a href="?action=delete_hakim&id=<?= $hakim['id_hakim']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin hapus hakim ini?');">Hapus</a>
                                                         </div>
                                                     </div>
-                                                    <div class="mt-3 text-xs border-t pt-2 grid grid-cols-2 gap-x-4 gap-y-1">
-                                                        <p><b>Asal:</b> <?php echo htmlspecialchars($hakim['asal_org']); ?></p>
-                                                        <p><b>Jabatan:</b> <?php echo htmlspecialchars($hakim['jabatan']); ?></p>
-                                                        <p><b>Kepres:</b> <?php echo htmlspecialchars($hakim['kepres']); ?> (<?php echo $hakim['tgl_kepres_formatted']; ?>)</p>
-                                                        <p><b>SK Dirjen:</b> <?php echo htmlspecialchars($hakim['sk_dirjen']); ?> (<?php echo $hakim['tgl_sk_dirjen_formatted']; ?>)</p>
-                                                        <p><b>SK Ke-2:</b> <?php echo htmlspecialchars($hakim['sk_pengangkatan_2']); ?> (<?php echo $hakim['tgl_sk_pengangkatan_2_formatted']; ?>)</p>
-                                                        <p><b>Masa Jabatan:</b> 2X</p>
-                                                        <p><b>TMT PN:</b> <?php echo $hakim['tmt_pn_formatted']; ?></p>
-                                                        <p><b>TMT HK:</b> <?php echo $hakim['tmt_hk_formatted']; ?> <span class="text-blue-600 font-semibold">(<?php echo $hakim['sisa_jabatan_string']; ?>)</span></p>
-                                                        <p class="col-span-2 mt-1 pt-1 border-t font-semibold text-blue-700"><b>Status:</b> <?php echo htmlspecialchars($hakim['status_baru']); ?></p>
-                                                        <p class="col-span-2 font-bold text-red-600"><b>Habis Jabatan:</b> <?php echo $hakim['tanggal_habis_baru_formatted']; ?></p>
+                                                    <div class="row small">
+                                                        <div class="col-6"><b>Asal:</b> <?= htmlspecialchars($hakim['asal_org']); ?></div>
+                                                        <div class="col-6"><b>Jabatan:</b> <?= htmlspecialchars($hakim['jabatan']); ?></div>
+                                                        <div class="col-6"><b>Kepres:</b> <?= htmlspecialchars($hakim['kepres']); ?> (<?= $hakim['tgl_kepres_formatted']; ?>)</div>
+                                                        <div class="col-6"><b>SK Dirjen:</b> <?= htmlspecialchars($hakim['sk_dirjen']); ?> (<?= $hakim['tgl_sk_dirjen_formatted']; ?>)</div>
+                                                        <div class="col-6"><b>SK Ke-2:</b> <?= htmlspecialchars($hakim['sk_pengangkatan_2']); ?> (<?= $hakim['tgl_sk_pengangkatan_2_formatted']; ?>)</div>
+                                                        <div class="col-6"><b>Masa Jabatan:</b> 2X</div>
+                                                        <div class="col-6"><b>TMT PN:</b> <?= $hakim['tmt_pn_formatted']; ?></div>
+                                                        <div class="col-6"><b>TMT HK:</b> <?= $hakim['tmt_hk_formatted']; ?> <span class="text-primary fw-semibold">(<?= $hakim['sisa_jabatan_string']; ?>)</span></div>
+                                                        <div class="col-12 mt-2"><b>Status:</b> <span class="text-primary"><?= htmlspecialchars($hakim['status_baru']); ?></span></div>
+                                                        <div class="col-12"><b class="text-danger">Habis Jabatan:</b> <?= $hakim['tanggal_habis_baru_formatted']; ?></div>
                                                     </div>
                                                 </div>
                                             <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="px-4 py-3 font-semibold align-top text-center"><?php echo htmlspecialchars($data['hk_ad_hoc'] ?? '0'); ?></td>
-                                <td class="px-4 py-3 align-top text-center"><?php echo htmlspecialchars($data['perkara_2023'] ?? '0'); ?></td>
-                                <td class="px-4 py-3 align-top text-center"><?php echo htmlspecialchars($data['perkara_2024'] ?? '0'); ?></td>
-                                <td class="px-4 py-3 align-top text-center"><?php echo htmlspecialchars($data['rata_rata'] ?? '0'); ?></td>
-                                <td class="px-4 py-3 font-bold align-top text-center"><?php echo htmlspecialchars($data['ideal'] ?? '0'); ?></td>
-                                <td class="px-4 py-3 align-top text-center">
-                                    <a href="?action=delete_pengadilan&id=<?php echo $data['id_pengadilan']; ?>" class="text-red-600 text-sm font-medium" onclick="return confirm('PERINGATAN: Yakin hapus pengadilan ini? Semua hakim di dalamnya akan ikut terhapus.');">Hapus</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?= htmlspecialchars($data['hk_ad_hoc'] ?? '0'); ?></td>
+                                    <td><?= htmlspecialchars($data['perkara_2023'] ?? '0'); ?></td>
+                                    <td><?= htmlspecialchars($data['perkara_2024'] ?? '0'); ?></td>
+                                    <td><?= htmlspecialchars($data['rata_rata'] ?? '0'); ?></td>
+                                    <td class="fw-bold"><?= htmlspecialchars($data['ideal'] ?? '0'); ?></td>
+                                    <td>
+                                        <a href="?action=delete_pengadilan&id=<?= $data['id_pengadilan']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('PERINGATAN: Yakin hapus pengadilan ini? Semua hakim di dalamnya akan ikut terhapus.');">Hapus</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                    <?php if (!empty($grouped_data) && empty($search_term)): ?>
+                    <tfoot class="table-light fw-bold">
+                        <tr>
+                            <td colspan="2">JUMLAH</td>
+                            <td><?= $total_data['total_hk']; ?></td>
+                            <td><?= $total_data['total_2023']; ?></td>
+                            <td><?= $total_data['total_2024']; ?></td>
+                            <td><?= $total_data['total_rr']; ?></td>
+                            <td><?= $total_data['total_id']; ?></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                     <?php endif; ?>
-                </tbody>
-                 <?php if (!empty($grouped_data) && empty($search_term)): ?>
-                <tfoot class="bg-gray-100 font-bold">
-                    <tr class="text-center">
-                        <td class="px-4 py-3" colspan="2">JUMLAH</td>
-                        <td class="px-4 py-3"><?php echo $total_data['total_hk']; ?></td>
-                        <td class="px-4 py-3"><?php echo $total_data['total_2023']; ?></td>
-                        <td class="px-4 py-3"><?php echo $total_data['total_2024']; ?></td>
-                        <td class="px-4 py-3"><?php echo $total_data['total_rr']; ?></td>
-                        <td class="px-4 py-3"><?php echo $total_data['total_id']; ?></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-                <?php endif; ?>
-            </table>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Hitung otomatis rata-rata dan ideal
     function hitungOtomatis() {
         const val2022 = parseInt(document.getElementById('th_2022').value) || 0;
         const val2023 = parseInt(document.getElementById('th_2023').value) || 0;
         const val2024 = parseInt(document.getElementById('th_2024').value) || 0;
         const rataRata = Math.round((val2022 + val2023 + val2024) / 3);
         let ideal;
-        if (rataRata < 31) ideal = 3; else if (rataRata < 61) ideal = 4;
-        else if (rataRata < 81) ideal = 6; else if (rataRata < 101) ideal = 10;
-        else if (rataRata < 151) ideal = 13; else if (rataRata < 201) ideal = 16;
+        if (rataRata < 31) ideal = 3;
+        else if (rataRata < 61) ideal = 4;
+        else if (rataRata < 81) ideal = 6;
+        else if (rataRata < 101) ideal = 10;
+        else if (rataRata < 151) ideal = 13;
+        else if (rataRata < 201) ideal = 16;
         else ideal = 17;
         document.getElementById('rata_rata').value = rataRata;
         document.getElementById('ideal').value = ideal;

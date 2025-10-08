@@ -1,6 +1,6 @@
 <?php
 // --- Koneksi dan ambil semua data hakim untuk dropdown ---
-require_once 'koneksi.php';
+require_once '../koneksi.php';
 
 $hakim_list = [];
 $sql_list = "SELECT id, nama FROM drp_hakim_perikanan ORDER BY nama ASC";
