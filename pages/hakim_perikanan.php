@@ -67,15 +67,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $tanggal_habis = !empty($_POST['tanggal_habis']) ? $_POST['tanggal_habis'] : null;
         $tmt_pn = !empty($_POST['tmt_pn']) ? $_POST['tmt_pn'] : null;
         $tmt_hk = !empty($_POST['tmt_hk']) ? $_POST['tmt_hk'] : null;
+        $tmt_jabatan = !empty($_POST['tmt_jabatan']) ? $_POST['tmt_jabatan'] : null;
         $sk_pengangkatan_2 = $_POST['sk_pengangkatan_2'] ?? '';
         $tgl_sk_pengangkatan_2 = !empty($_POST['tgl_sk_pengangkatan_2']) ? $_POST['tgl_sk_pengangkatan_2'] : null;
 
         if (!empty($nama_hakim) && !empty($id_pengadilan)) {
             // MODIFIKASI: Menambahkan kolom 'foto' ke query INSERT
-            $sql_insert = "INSERT INTO hakim_perikanan (nama_hakim, nik, foto, id_pengadilan, asal_org, jabatan, kepres, tgl_kepres, sk_dirjen, tgl_sk_dirjen, masa_jabatan, status_perpanjangan, tanggal_habis, tmt_pn, tmt_hk, sk_pengangkatan_2, tgl_sk_pengangkatan_2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql_insert = "INSERT INTO hakim_perikanan (nama_hakim, nik, foto, id_pengadilan, asal_org, jabatan, kepres, tgl_kepres, sk_dirjen, tgl_sk_dirjen, masa_jabatan, status_perpanjangan, tanggal_habis, tmt_pn, tmt_hk, tmt_jabatan, sk_pengangkatan_2, tgl_sk_pengangkatan_2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql_insert);
             // MODIFIKASI: Menambahkan tipe 's' untuk foto dan variabel $foto_filename
-            $stmt->bind_param("sssisssssssssssss", $nama_hakim, $nik, $foto_filename, $id_pengadilan, $asal_org, $jabatan, $kepres, $tgl_kepres, $sk_dirjen, $tgl_sk_dirjen, $masa_jabatan, $status_perpanjangan, $tanggal_habis, $tmt_pn, $tmt_hk, $sk_pengangkatan_2, $tgl_sk_pengangkatan_2);
+            $stmt->bind_param("sssissssssssssssss", $nama_hakim, $nik, $foto_filename, $id_pengadilan, $asal_org, $jabatan, $kepres, $tgl_kepres, $sk_dirjen, $tgl_sk_dirjen, $masa_jabatan, $status_perpanjangan, $tanggal_habis, $tmt_pn, $tmt_hk, $tmt_jabatan, $sk_pengangkatan_2, $tgl_sk_pengangkatan_2);
 
             if ($stmt->execute()) {
                 $action_message = "Hakim '{$nama_hakim}' berhasil ditambahkan.";
@@ -464,6 +465,10 @@ $conn->close();
                                                         <label class="form-label">TMT HK</label>
                                                         <input type="date" name="tmt_hk" class="form-control">
                                                     </div>
+                                                    <div class="col">
+                                                        <label class="form-label">TMT Jabatan</label>
+                                                        <input type="date" name="tmt_jabatan" class="form-control">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <button type="submit" class="btn btn-success w-100 mt-2">Simpan
@@ -569,6 +574,9 @@ $conn->close();
                                                             <div class="col-6"><b>TMT PN:</b> <?= $hakim['tmt_pn_formatted']; ?></div>
                                                             <div class="col-6"><b>TMT HK:</b> <?= $hakim['tmt_hk_formatted']; ?> <span
                                                                     class="text-primary fw-semibold">(<?= $hakim['sisa_jabatan_string']; ?>)</span>
+                                                            </div>
+                                                            <div class="col-6"><b>TMT Jabatan:</b>
+                                                                <?= $hakim['tmt_jabatan']; ?>
                                                             </div>
                                                             <div class="col-12 mt-2"><b>Status:</b> <span
                                                                     class="text-primary"><?= htmlspecialchars($hakim['status_baru']); ?></span>
